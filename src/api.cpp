@@ -1,82 +1,93 @@
-#include "api.h"
+
+#include<string>
 #include<iostream>
+#include "api.h"
 
 // return the version string of the API
 std::string version() {
     std::string version(VERSION);
-    return version; 
+    return version;
 }
 
 // creates a new node
-ITNode * newNode(Interval i){
-    ITNode *temp = new ITNode;
-    temp->i = new Interval(i);
-    temp->max = i.high;
+rangeC::rNode * newNode(rangeC::range r){
+    rangeC::rNode *temp = new rangeC::rNode;
+    temp->ivl = new rangeC::range(r);
+    temp->max = r.high;
     temp->left = temp->right = NULL;
+    return temp;
 }
 
-// insert interval
-ITNode *insert(ITNode *root, Interval i){
+// insert range
+rangeC::rNode *insertRange(rangeC::rNode *root, rangeC::range r){
     //base case
     if (root == NULL){
-        return newNode(i);
+        return newNode(r);
     }
 
     // low value of root interval
-    int l = root->i->low;
+    std::string l = root->ivl->low;
 
     // if interval's low value if smaller, left subtree insertion
-    if (i.low < l)
-        root->left = insert(root->left, i);
+    if (r.low.compare(l) < 0)
+        root->left = insertRange(root->left, r);
     else
-        root->right = insert(root->right, i);
+        root->right = insertRange(root->right, r);
 
     // update max value
-    if (root->max < i.high)
-        root->max = i.high;
+    if (root->max.compare(r.high) > 0)
+        root->max.assign(r.high);
 
     return root;
 }
 
-// utility for search 
-bool doOverlap(Interval i1, Interval i2){
-    if (i1.low <= i2.high && i2.low <= i1.high)
+// utility for search
+bool checkOverlap(rangeC::range r1, std::string r2){
+    /*std::cout << "compare " <<r1.low << " and "<<r2<< " result "
+              <<r1.low.compare(r2) <<", compare " << r1.high<<" and "<< r2 <<
+              " result " <<r1.high.compare(r2)<<std::endl;
+    if ((r1.low.compare(r2) < 0 || r1.low.compare(r2) == 0) &&
+            (r1.high.compare(r2) > 0 || r1.high.compare(r2) == 0)) {*/
+    std::cout<<"compare " <<r1.low << " and "<<r2<< " result "
+             <<(r1.low > r2) <<", compare " << r1.high<<" and "<< r2 <<
+             " result " <<(r1.high < r2)<<std::endl;
+    if ((r1.low > r2 || r1.low == r2) && (r1.high < r2 || r1.high == r2 ))
         return true;
+
     return false;
 }
 
-// search interval
-Interval *overlapSearch(ITNode *root, Interval i){
+// search range
+rangeC::range *searchRange(rangeC::rNode *root, std::string r){
     // base case
     if (root == NULL) return NULL;
 
     // overlap with root
-    if (doOverlap(*(root->i), i))
-        return root->i;
+    if (checkOverlap(*(root->ivl), r))
+        return root->ivl;
 
     // left child max is greater than or equal
     // to low value of interval, present in left subtree
-    if (root->left != NULL && root->left->max >= i.low)
-        return overlapSearch(root->left, i);
+    if (root->left != NULL && root->left->max >= r)
+        return searchRange(root->left, r);
 
     // else right subtree
-    return overlapSearch(root->right, i);
+    return searchRange(root->right, r);
 }
 
 // delete interval
-bool deleteInterval(ITNode *root, Interval i){
+bool deleteInterval(rangeC::rNode *root, rangeC::range r){
     // base case
     if (root == NULL) return false;
     // overlap with root
-    
+
     return true;
 }
 
-void inorder(ITNode *root){
+void inorderPrint(rangeC::rNode *root){
     if (root == NULL) return;
-    inorder(root->left);
-    std::cout << "[" << root->i->low << ", " << root->i->high <<"]"
-         << "max = "<< root->max <<std::endl;
-    inorder(root->right);
+    inorderPrint(root->left);
+    std::cout << "[" << root->ivl->low << ", " << root->ivl->high <<"]"
+              << "max = "<< root->max <<std::endl;
+    inorderPrint(root->right);
 }
-

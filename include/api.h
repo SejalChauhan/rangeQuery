@@ -1,4 +1,6 @@
-#include <string>
+
+#include<string>
+#include<iostream>
 
 #pragma once //just include once
 
@@ -6,33 +8,52 @@
 
 std::string version();
 
-// represent interval
-struct Interval{
-    int low, high;
-};
+class rangeC {
+private:
+    std::string s;
+public:
+// represent range
+    struct range {
+        std::string low, high;
+    };
 
 // interval search tree node
-struct ITNode{
-    Interval *i;
-    int max;
-    ITNode *left, *right;
+    struct rNode {
+        range *ivl;
+        std::string max;
+        rNode *left, *right;
+    };
+
+
+// overload comparator
+    bool operator < (rangeC const &obj) {
+        rangeC res;
+        return res.s < obj.s;
+    }
+    bool operator > (rangeC const &obj) {
+        rangeC res;
+        return res.s > obj.s;
+    }
+    bool operator == (rangeC const &obj) {
+        rangeC res;
+        return res.s == obj.s;
+    }
 };
 
 // creates a new node
-ITNode * newNode(Interval i);
+rangeC::rNode *newNode(rangeC::range r);
 
-// insert interval
-ITNode *insert(ITNode *root, Interval i);
+// insert range
+rangeC::rNode *insertRange(rangeC::rNode *root, rangeC::range r);
 
-// utility search interval
-bool doOverlap(Interval i1, Interval i2);
+// utility search range
+bool checkOverlap(rangeC::range r1, std::string r2);
 
-// search interval
-Interval *overlapSearch(ITNode *root, Interval i);
+// search range
+rangeC::range *searchRange(rangeC::rNode *root, std::string r);
 
-// delete interval
-bool deleteInterval(ITNode *root, Interval i);
+// delete range
+bool deleteRange(rangeC::rNode *root, rangeC::range r);
 
 // print utility
-void inorder(ITNode *root);
-
+void inorderPrint(rangeC::rNode *root);
