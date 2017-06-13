@@ -1,4 +1,3 @@
-
 #include<string>
 #include<iostream>
 
@@ -28,15 +27,39 @@ public:
 // overload comparator
     bool operator < (rangeC const &obj) {
         rangeC res;
-        return res.s < obj.s;
+        int i=0;
+        while (res.s[i] < obj.s[i]){
+            i++;
+        }
+        std::cout<<"less"<<i;
+        if(res.s[i] > obj.s[i])
+            return false;
+
+        return true;
     }
     bool operator > (rangeC const &obj) {
         rangeC res;
-        return res.s > obj.s;
+        int i=0;
+        while (res.s[i] > obj.s[i]){
+            i++;
+        }
+        std::cout<<"more"<<i;
+        if(res.s[i] < obj.s[i])
+            return false;
+
+        return true;
     }
     bool operator == (rangeC const &obj) {
         rangeC res;
-        return res.s == obj.s;
+        int i=0;
+        while (res.s[i] == obj.s[i]){
+            i++;
+        }
+        std::cout<<"eq"<<i;
+        if(res.s[i] != obj.s[i])
+            return false;
+
+        return true;
     }
 };
 
@@ -53,7 +76,7 @@ bool checkOverlap(rangeC::range r1, std::string r2);
 rangeC::range *searchRange(rangeC::rNode *root, std::string r);
 
 // delete range
-bool deleteRange(rangeC::rNode *root, rangeC::range r);
+rangeC::rNode *deleteRange(rangeC::rNode *root, rangeC::range r);
 
 // print utility
 void inorderPrint(rangeC::rNode *root);

@@ -27,7 +27,8 @@ int main(int argc, char **argv) {
     else
         std::cout << "Overlaps with [" << res->low <<", " << res->high
                   << "]";
-
+    rangeC::range y = {"aa", "bb"};
+    inorderPrint(root);
     return 0;
 }
 

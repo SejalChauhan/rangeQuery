@@ -1,3 +1,6 @@
+//
+// Created by Sejal on 6/13/17.
+//
 
 #include<string>
 #include<iostream>
@@ -49,9 +52,9 @@ bool checkOverlap(rangeC::range r1, std::string r2){
     if ((r1.low.compare(r2) < 0 || r1.low.compare(r2) == 0) &&
             (r1.high.compare(r2) > 0 || r1.high.compare(r2) == 0)) {*/
     std::cout<<"compare " <<r1.low << " and "<<r2<< " result "
-             <<(r1.low > r2) <<", compare " << r1.high<<" and "<< r2 <<
-             " result " <<(r1.high < r2)<<std::endl;
-    if ((r1.low > r2 || r1.low == r2) && (r1.high < r2 || r1.high == r2 ))
+             <<(r1.low < r2) <<", compare " << r1.high<<" and "<< r2 <<
+             " result " <<(r1.high > r2)<<std::endl;
+    if ((r1.low < r2 || r1.low == r2) && (r1.high > r2 || r1.high == r2 ))
         return true;
 
     return false;
@@ -75,13 +78,47 @@ rangeC::range *searchRange(rangeC::rNode *root, std::string r){
     return searchRange(root->right, r);
 }
 
-// delete interval
-bool deleteInterval(rangeC::rNode *root, rangeC::range r){
-    // base case
-    if (root == NULL) return false;
-    // overlap with root
+rangeC::rNode * minValNode(rangeC::rNode* node)
+{
+    rangeC::rNode* current = node;
 
-    return true;
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+
+// delete interval
+rangeC::rNode *deleteRange(rangeC::rNode *root, rangeC::range *r){
+
+    // base case
+    if (root == NULL) return root;
+
+    if ((root->ivl->low < r->high || root->ivl->low == r->high) &&
+            (root->ivl->high > r->low || root->ivl->high == r->low))
+        root->left = deleteRange(root->left, r);
+    else if ((root->ivl->high < r->low || root->ivl->low == r->high) &&
+            (root->ivl->high > r->low || root->ivl->high == r->low))
+        root->right = deleteRange(root->right, r);
+
+    else {
+        if (root->left == NULL){
+            rangeC::rNode *temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL){
+            rangeC::rNode *temp = root->left;
+            free(root);
+            return temp;
+        }
+        rangeC::rNode *temp = minValNode(root->right);
+        root->ivl = temp->ivl;
+        root->right = deleteRange(root->right, temp->ivl);
+    }
+
+    return root;
 }
 
 void inorderPrint(rangeC::rNode *root){
