@@ -26,5 +26,3 @@ From root of the tree run
 #or, for out of tree compilation steps
 ./out/teradata
 ```
-# rangeQuery
-# rangeQuery
